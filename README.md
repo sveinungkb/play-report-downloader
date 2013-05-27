@@ -12,6 +12,14 @@ https://github.com/sveinungkb/play-report-downloader
 
 * sales reports TBD
 
+### Build instructions
+
+* Rename play.empty.properties to play.properties and edit your Play credentials. 
+
+### How to use it
+
+Check unit and integration tests.
+
 Georgi Lambov
 georgi.lambov@gmail.com
 Copyright (2012) Sveinung Kval Bakken

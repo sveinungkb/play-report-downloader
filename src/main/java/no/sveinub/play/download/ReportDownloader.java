@@ -53,51 +53,54 @@ public class ReportDownloader {
 	private static final String REPORT_METRICS = "daily_device_installs,daily_device_uninstalls,daily_device_upgrades,active_user_installs,total_user_installs,daily_user_installs,daily_user_uninstalls";
 
 	private final Logger logger = Logger.getLogger(ReportDownloader.class);
-	
+
 	private DefaultHttpClient client;
 	private BasicHttpContext context;
 	private Credentials credentials;
-	
-	public ReportDownloader (Credentials credentials) {
+
+	public ReportDownloader(Credentials credentials) {
 		this.credentials = credentials;
-        client = new DefaultHttpClient();
-        context = new BasicHttpContext();
-        
-        initHttpParams();
+		client = new DefaultHttpClient();
+		context = new BasicHttpContext();
+
+		initHttpParams();
 	}
 
 	private void initHttpParams() {
-		client.getParams().setParameter("http.useragent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0");
-        client.getParams().setParameter("http.protocol.handle-redirects", true);
-        client.getParams().setParameter("http.protocol.max-redirects", 10);
+		client.getParams()
+				.setParameter("http.useragent",
+						"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0");
+		client.getParams().setParameter("http.protocol.handle-redirects", true);
+		client.getParams().setParameter("http.protocol.max-redirects", 10);
 	}
 
-	public void login() throws ReportDownloaderException{
+	public void login() throws ReportDownloaderException {
 		try {
 			Element loginForm = fetchLoginForm();
 			String formUrl = loginForm.attributes().get("action");
 			logger.debug("Found login form");
-			
+
 			loginByUsingForm(loginForm, formUrl);
-			
-			if(isLoggedIn()) {
+
+			if (isLoggedIn()) {
 				logger.debug("Logged in and got cookies:");
-			}
-			else {
+			} else {
 				logger.debug("Login failed :(");
 			}
-			
+
 		} catch (Exception e) {
 			throw new ReportDownloaderException(e);
 		}
 	}
+
 	private Element fetchLoginForm() throws HttpException, IOException,
-	URISyntaxException {
-		HttpResponse loginResponse = client.execute(getRequest(LOGIN_PAGE), context);
+			URISyntaxException {
+		HttpResponse loginResponse = client.execute(getRequest(LOGIN_PAGE),
+				context);
 		Document loginSite = Jsoup.parse(readResponseBody(loginResponse));
-		
+
 		logger.debug("Got login site");
-		
+
 		Element loginForm = loginSite.getElementById("gaia_loginform");
 		EntityUtils.consume(loginResponse.getEntity());
 		return loginForm;
@@ -108,18 +111,21 @@ public class ReportDownloader {
 			HttpException, IOException {
 		HttpPost loginRequest = postRequest(formUrl);
 		addFormValues(loginRequest, loginValuesFromForm(loginForm));
-		logger.debug("Logging in...");
+		logger.info("Logging in...");
 		HttpResponse loginResponse = client.execute(loginRequest, context);
 		EntityUtils.consume(loginResponse.getEntity());
 	}
 
-
-	public File downloadReportToDirectory(File reportsDir, String packageName, int days) throws ReportDownloaderException {
+	public File downloadReportToDirectory(File reportsDir, String packageName,
+			int days) throws ReportDownloaderException {
 		try {
-			if(!isLoggedIn()) throw new ReportDownloaderException("Not logged in, call login first.");
+			if (!isLoggedIn())
+				throw new ReportDownloaderException(
+						"Not logged in, call login first.");
 			createReportsDirectory(reportsDir);
 			HttpResponse requestReport = requestReport(packageName, days);
-			File reportFile = new File(reportsDir, packageName + "-" + System.currentTimeMillis() + ".csv");
+			File reportFile = new File(reportsDir, packageName + "-"
+					+ System.currentTimeMillis() + ".csv");
 			downloadReport(reportFile, requestReport);
 			EntityUtils.consume(requestReport.getEntity());
 			return reportFile;
@@ -128,15 +134,16 @@ public class ReportDownloader {
 		}
 	}
 
-
 	private void createReportsDirectory(File reportsDir) {
-		if(reportsDir.mkdirs()) {
+		if (reportsDir.mkdirs()) {
 			logger.info("Created: " + reportsDir);
 		}
 	}
-	
-	private HttpResponse requestReport(String packageName, int days) throws URISyntaxException, HttpException, IOException {
-		HttpUriRequest request = getRequest(buildStatisticsUri(packageName, days));
+
+	private HttpResponse requestReport(String packageName, int days)
+			throws URISyntaxException, HttpException, IOException {
+		HttpUriRequest request = getRequest(buildStatisticsUri(packageName,
+				days));
 		logger.info("Will download report at: " + request.getURI().toString());
 		return client.execute(request, context);
 	}
@@ -154,19 +161,22 @@ public class ReportDownloader {
 	private void appendDateRange(int days, StringBuilder uriBuilder) {
 		DateTime endDate = new DateTime().minusDays(1);
 		DateTime startDate = endDate.minusDays(days);
-		uriBuilder.append("&sd=").append(startDate.toString(REPORT_DATE_FORMAT));
+		uriBuilder.append("&sd=")
+				.append(startDate.toString(REPORT_DATE_FORMAT));
 		uriBuilder.append("&ed=").append(endDate.toString(REPORT_DATE_FORMAT));
 	}
 
-	private void downloadReport(File reportFile,
-			HttpResponse reportResponse) throws ReportDownloaderException, IOException {
-		if(reportResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+	private void downloadReport(File reportFile, HttpResponse reportResponse)
+			throws ReportDownloaderException, IOException {
+		if (reportResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 			BufferedWriter out = new BufferedWriter(new FileWriter(reportFile));
 			out.write(EntityUtils.toString(reportResponse.getEntity()));
 			out.close();
-			logger.debug("Wrote " + reportFile.length() + " bytes to " + reportFile);
-		}
-		else throw new ReportDownloaderException("Invalid response code: " + reportResponse.getStatusLine().toString());
+			logger.debug("Wrote " + reportFile.length() + " bytes to "
+					+ reportFile);
+		} else
+			throw new ReportDownloaderException("Invalid response code: "
+					+ reportResponse.getStatusLine().toString());
 	}
 
 	private HttpUriRequest getRequest(String uri) throws URISyntaxException {
@@ -179,17 +189,17 @@ public class ReportDownloader {
 
 	private List<NameValuePair> loginValuesFromForm(Element loginForm) {
 		List<NameValuePair> values = new ArrayList<NameValuePair>();
-		
+
 		Elements inputElements = loginForm.getElementsByTag("input");
-		for(int i = 0; i<inputElements.size(); i++) {
+		for (int i = 0; i < inputElements.size(); i++) {
 			Element element = inputElements.get(i);
 			String name = element.attr("name");
 			String value = element.attr("value");
-			if("Passwd".equals(name)) {
+			if ("Passwd".equals(name)) {
 				value = credentials.password;
-			} else if("Email".equals(name)) {
+			} else if ("Email".equals(name)) {
 				value = credentials.email;
-			} else if("PersistentCookie".equals(name)) {
+			} else if ("PersistentCookie".equals(name)) {
 				value = "no";
 			}
 			values.add(new BasicNameValuePair(name, value));
@@ -197,22 +207,25 @@ public class ReportDownloader {
 		return values;
 	}
 
-	private void addFormValues(HttpPost loginRequest, List<NameValuePair> formValues) throws UnsupportedEncodingException {
-		UrlEncodedFormEntity entitity = new UrlEncodedFormEntity(formValues, HTTP.UTF_8);
+	private void addFormValues(HttpPost loginRequest,
+			List<NameValuePair> formValues) throws UnsupportedEncodingException {
+		UrlEncodedFormEntity entitity = new UrlEncodedFormEntity(formValues,
+				HTTP.UTF_8);
 		loginRequest.setEntity(entitity);
-		
+
 	}
 
 	private boolean isLoggedIn() {
-		for(Cookie cookie : client.getCookieStore().getCookies()) {
-			if("GAPS".equals(cookie.getName())) {
+		for (Cookie cookie : client.getCookieStore().getCookies()) {
+			if ("GAPS".equals(cookie.getName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private String readResponseBody(HttpResponse loginResponse) throws ParseException, IOException {
+	private String readResponseBody(HttpResponse loginResponse)
+			throws ParseException, IOException {
 		return EntityUtils.toString(loginResponse.getEntity());
 	}
 }
