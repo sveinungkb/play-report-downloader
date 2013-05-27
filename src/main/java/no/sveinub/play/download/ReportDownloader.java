@@ -37,6 +37,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,6 +52,8 @@ public class ReportDownloader {
 	private static final String REPORT_DIMENSION = "country";
 	private static final String REPORT_METRICS = "daily_device_installs,daily_device_uninstalls,daily_device_upgrades,active_user_installs,total_user_installs,daily_user_installs,daily_user_uninstalls";
 
+	private final Logger logger = Logger.getLogger(ReportDownloader.class);
+	
 	private DefaultHttpClient client;
 	private BasicHttpContext context;
 	private Credentials credentials;
@@ -73,15 +76,15 @@ public class ReportDownloader {
 		try {
 			Element loginForm = fetchLoginForm();
 			String formUrl = loginForm.attributes().get("action");
-			System.out.println("Found login form");
+			logger.debug("Found login form");
 			
 			loginByUsingForm(loginForm, formUrl);
 			
 			if(isLoggedIn()) {
-				System.out.println("Logged in and got cookies:");
+				logger.debug("Logged in and got cookies:");
 			}
 			else {
-				System.out.println("Login failed :(");
+				logger.debug("Login failed :(");
 			}
 			
 		} catch (Exception e) {
@@ -93,7 +96,7 @@ public class ReportDownloader {
 		HttpResponse loginResponse = client.execute(getRequest(LOGIN_PAGE), context);
 		Document loginSite = Jsoup.parse(readResponseBody(loginResponse));
 		
-		System.out.println("Got login site");
+		logger.debug("Got login site");
 		
 		Element loginForm = loginSite.getElementById("gaia_loginform");
 		EntityUtils.consume(loginResponse.getEntity());
@@ -105,7 +108,7 @@ public class ReportDownloader {
 			HttpException, IOException {
 		HttpPost loginRequest = postRequest(formUrl);
 		addFormValues(loginRequest, loginValuesFromForm(loginForm));
-		System.out.println("Logging in...");
+		logger.debug("Logging in...");
 		HttpResponse loginResponse = client.execute(loginRequest, context);
 		EntityUtils.consume(loginResponse.getEntity());
 	}
@@ -128,13 +131,13 @@ public class ReportDownloader {
 
 	private void createReportsDirectory(File reportsDir) {
 		if(reportsDir.mkdirs()) {
-			System.out.println("Created: " + reportsDir);
+			logger.info("Created: " + reportsDir);
 		}
 	}
 	
 	private HttpResponse requestReport(String packageName, int days) throws URISyntaxException, HttpException, IOException {
 		HttpUriRequest request = getRequest(buildStatisticsUri(packageName, days));
-		System.out.println("Will download report at: " + request.getURI().toString());
+		logger.info("Will download report at: " + request.getURI().toString());
 		return client.execute(request, context);
 	}
 
@@ -161,7 +164,7 @@ public class ReportDownloader {
 			BufferedWriter out = new BufferedWriter(new FileWriter(reportFile));
 			out.write(EntityUtils.toString(reportResponse.getEntity()));
 			out.close();
-			System.out.println("Wrote " + reportFile.length() + " bytes to " + reportFile);
+			logger.debug("Wrote " + reportFile.length() + " bytes to " + reportFile);
 		}
 		else throw new ReportDownloaderException("Invalid response code: " + reportResponse.getStatusLine().toString());
 	}
