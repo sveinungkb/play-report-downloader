@@ -6,6 +6,14 @@ A Google (tm) Play (tm?) report downloader for Java, download all those nice And
 Play Report Downloader
 https://github.com/sveinungkb/play-report-downloader
 
+### Supported reports type are:
+
+* application statistics
+
+* sales reports TBD
+
+Georgi Lambov
+georgi.lambov@gmail.com
 Copyright (2012) Sveinung Kval Bakken
 sveinung.bakken@gmail.com
 

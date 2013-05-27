@@ -23,23 +23,24 @@ import no.sveinub.play.report.ReportReader;
 public class Main {
 	private static final String USERNAME = "your.email@gmail.com";
 	private static final String PASSWORD = "password";
-	
+
 	/*
 	 * You'll find this one by logging in to your dev account:
-	 * https://play.google.com/apps/publish/Home?dev_acc=092462466935067nnnnn  <-- copy everything after dev_acc=
+	 * https://play.google.com/apps/publish/Home?dev_acc=092462466935067nnnnn
+	 * <-- copy everything after dev_acc=
 	 */
 	private static final String DEV_ACCOUNT = "1771.....72194";
 	private static final String PACKAGE = "com.your.package";
 	private static final int N_DAYS = 100;
-	
-	
 
 	public static void main(String[] args) throws Exception {
 		ReportDownloader downloader = new ReportDownloader(getCredentials());
 		downloader.login();
-		File reportFile = downloader.downloadReportToDirectory(reportsDir(), PACKAGE, N_DAYS);
+		File reportFile = downloader.downloadReportToDirectory(reportsDir(),
+				PACKAGE, N_DAYS);
 		Report report = ReportReader.read(reportFile);
-		System.out.println("Read: " + report.getLines().size() + " lines for application: " + report.packageName);
+		System.out.println("Read: " + report.getLines().size()
+				+ " lines for application: " + report.packageName);
 	}
 
 	private static File reportsDir() {
@@ -53,4 +54,5 @@ public class Main {
 		whois.email = USERNAME;
 		return whois;
 	}
+	
 }
