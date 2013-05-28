@@ -223,9 +223,12 @@ public class DownloadSalesReportIntegrationTest {
 		String checkCookieLocation = null;
 		for (Header h : response.getAllHeaders()) {
 			if (h.getName().equals("Location")) {
-				checkCookieLocation = h.getValue();
+				checkCookieLocation = h.getValue()
+						+ "&service=androiddeveloper";
 			}
 		}
+
+		System.out.println("Post location follow: " + checkCookieLocation);
 		Assert.assertNotNull(checkCookieLocation);
 
 		RawCookieBuilder checkCookieBuilder = new RawCookieBuilder();
@@ -271,22 +274,58 @@ public class DownloadSalesReportIntegrationTest {
 		EntityUtils.consume(response.getEntity());
 
 		// call SetSID
-		checkCookieLocation = null;
+		String accountsSetSIDLocation = null;
 		for (Header h : response.getAllHeaders()) {
 			if (h.getName().equals("Location")) {
-				checkCookieLocation = h.getValue();
+				accountsSetSIDLocation = h.getValue();
 			}
 		}
-		Assert.assertNotNull(checkCookieLocation);
-		httpget = new HttpGet(checkCookieLocation);
 
+		Assert.assertNotNull(accountsSetSIDLocation);
+		httpget = new HttpGet(accountsSetSIDLocation);
 		response = httpclient.execute(httpget, localContext);
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
 
 		EntityUtils.consume(response.getEntity());
-	
+
+		String publishAuthLocation = null;
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				publishAuthLocation = h.getValue();
+			}
+		}
+		Assert.assertNotNull(publishAuthLocation);
+
+		// publish auth
+		httpget = new HttpGet(publishAuthLocation);
+		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		EntityUtils.consume(response.getEntity());
+
+		String adCookie = null;
+		its = new BasicHeaderElementIterator(
+				response.headerIterator("Set-Cookie"));
+		while (its.hasNext()) {
+			HeaderElement elem = its.nextElement();
+			if (elem.getName().equals("AD")) {
+				adCookie = elem.getValue();
+			}
+		}
+		Assert.assertNotNull(adCookie);
+
+		// app/publish for dev_acc
+		httpget = new HttpGet("https://play.google.com/apps/publish/");
+		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		EntityUtils.consume(response.getEntity());
 		
+		for (Header h : response.getAllHeaders()) {
+			System.out.println(h.getName() + ": " + h.getValue());
+		}
+
 		/*
 		 * 
 		 * httpget = new HttpGet(checkCookieLocation);
