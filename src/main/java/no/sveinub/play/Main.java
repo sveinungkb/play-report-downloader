@@ -16,7 +16,7 @@ package no.sveinub.play;
 import java.io.File;
 
 import no.sveinub.play.download.Credentials;
-import no.sveinub.play.download.ReportDownloader;
+import no.sveinub.play.download.GameStatsReportDownloader;
 import no.sveinub.play.report.Report;
 import no.sveinub.play.report.ReportReader;
 
@@ -34,7 +34,7 @@ public class Main {
 	private static final int N_DAYS = 100;
 
 	public static void main(String[] args) throws Exception {
-		ReportDownloader downloader = new ReportDownloader(getCredentials());
+		GameStatsReportDownloader downloader = new GameStatsReportDownloader(getCredentials());
 		downloader.login();
 		File reportFile = downloader.downloadReportToDirectory(reportsDir(),
 				PACKAGE, N_DAYS);

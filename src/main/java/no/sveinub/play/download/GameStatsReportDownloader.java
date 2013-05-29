@@ -43,7 +43,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ReportDownloader {
+public class GameStatsReportDownloader {
 	private static final String LOGIN_PAGE = "https://accounts.google.com/ServiceLogin?service=androiddeveloper&passive=true&nui=1&continue=https://play.google.com/apps/publish&followup=https://play.google.com/apps/publish";
 	private static final String REPORT_BASE = "https://play.google.com/apps/publish/statistics/download?";
 
@@ -51,13 +51,13 @@ public class ReportDownloader {
 	private static final String REPORT_DIMENSION = "country";
 	private static final String REPORT_METRICS = "daily_device_installs,daily_device_uninstalls,daily_device_upgrades,active_user_installs,total_user_installs,daily_user_installs,daily_user_uninstalls";
 
-	private final Logger logger = Logger.getLogger(ReportDownloader.class);
+	private final Logger logger = Logger.getLogger(GameStatsReportDownloader.class);
 
 	private DefaultHttpClient client;
 	private BasicHttpContext context;
 	private Credentials credentials;
 
-	public ReportDownloader(Credentials credentials) {
+	public GameStatsReportDownloader(Credentials credentials) {
 		this.credentials = credentials;
 		client = new DefaultHttpClient();
 		context = new BasicHttpContext();

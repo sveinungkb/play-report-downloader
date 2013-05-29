@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import no.sveinub.play.download.Credentials;
-import no.sveinub.play.download.ReportDownloader;
+import no.sveinub.play.download.GameStatsReportDownloader;
 import no.sveinub.play.download.ReportDownloaderException;
 import no.sveinub.play.http.RawCookieBuilder;
 
@@ -60,7 +60,7 @@ public class DownloadSalesReportIntegrationTest {
 	private DefaultHttpClient httpclient;
 	private HttpContext localContext;
 
-	private ReportDownloader reportDownload;
+	private GameStatsReportDownloader reportDownload;
 
 	@BeforeClass
 	public static void init() throws IOException {
@@ -76,7 +76,7 @@ public class DownloadSalesReportIntegrationTest {
 		credentials.email = prop.getProperty("play.email");
 		credentials.password = prop.getProperty("play.password");
 
-		reportDownload = new ReportDownloader(credentials);
+		reportDownload = new GameStatsReportDownloader(credentials);
 
 		PoolingClientConnectionManager cxMgr = new PoolingClientConnectionManager(
 				SchemeRegistryFactory.createDefault());
