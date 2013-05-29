@@ -52,11 +52,21 @@ public class RawCookieBuilder {
 		return this;
 	}
 
-	public List<NameValuePair> getQueryParams(){
+	/**
+	 * Adapting getQueryParams method of {@link URIBuilder}.
+	 * 
+	 * @return
+	 */
+	public List<NameValuePair> getQueryParams() {
 		return uriBuilder.getQueryParams();
-		
+
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return uriBuilder.toString().replace("&", "; ").replaceFirst("\\?", "");

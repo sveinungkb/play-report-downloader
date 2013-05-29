@@ -35,7 +35,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -210,7 +209,7 @@ public class ReportDownloader {
 	private void addFormValues(HttpPost loginRequest,
 			List<NameValuePair> formValues) throws UnsupportedEncodingException {
 		UrlEncodedFormEntity entitity = new UrlEncodedFormEntity(formValues,
-				HTTP.UTF_8);
+				"UTF-8");
 		loginRequest.setEntity(entitity);
 
 	}
@@ -228,4 +227,5 @@ public class ReportDownloader {
 			throws ParseException, IOException {
 		return EntityUtils.toString(loginResponse.getEntity());
 	}
+
 }
