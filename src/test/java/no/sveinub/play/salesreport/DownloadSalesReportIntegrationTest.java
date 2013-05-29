@@ -2,11 +2,9 @@ package no.sveinub.play.salesreport;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -143,16 +141,10 @@ public class DownloadSalesReportIntegrationTest {
 		Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine()
 				.getStatusCode());
 
-		for (Header h : response.getAllHeaders()) {
-			// System.out.println("headers " + h.getName() + ": " +
-			// h.getValue());
-		}
-
-		// System.out.println("end checkpoit 1");
-
 		RawCookieBuilder loginCookieBuilder = new RawCookieBuilder();
 		BasicHeaderElementIterator its = new BasicHeaderElementIterator(
 				response.headerIterator("Set-Cookie"));
+		String gapsFirst = null;
 		while (its.hasNext()) {
 			HeaderElement elem = its.nextElement();
 			if (elem.getName().equals("GoogleAccountsLocale_session")
@@ -163,10 +155,10 @@ public class DownloadSalesReportIntegrationTest {
 			}
 
 			if (elem.getName().equals("GAPS")) {
-				System.out.println("GAPS first: " + elem.getValue());
+				gapsFirst = elem.getValue();
 			}
-
 		}
+		Assert.assertNotNull(gapsFirst);
 
 		loginCookieBuilder.addParameter("GoogleAccountsLocale_session", "bg");
 
@@ -227,17 +219,17 @@ public class DownloadSalesReportIntegrationTest {
 						+ "&service=androiddeveloper";
 			}
 		}
-
-		System.out.println("Post location follow: " + checkCookieLocation);
+		
 		Assert.assertNotNull(checkCookieLocation);
 
 		RawCookieBuilder checkCookieBuilder = new RawCookieBuilder();
 		its = new BasicHeaderElementIterator(
 				response.headerIterator("Set-Cookie"));
+		String gapsSecond = null;
 		while (its.hasNext()) {
 			HeaderElement elem = its.nextElement();
 			if (elem.getName().equals("GAPS")) {
-				System.out.println("GAPS second: " + elem.getValue());
+				gapsSecond = elem.getValue();
 			}
 
 			if (elem.getName().equals("GAPS") || elem.getName().equals("RMME")
@@ -253,6 +245,8 @@ public class DownloadSalesReportIntegrationTest {
 			}
 		}
 
+		Assert.assertTrue(!gapsFirst.equals(gapsSecond));
+		
 		for (NameValuePair param : loginCookieBuilder.getQueryParams()) {
 			if (param.getName().equals("GALX")) {
 				checkCookieBuilder.addParameter(param.getName(),
@@ -265,11 +259,6 @@ public class DownloadSalesReportIntegrationTest {
 		response = httpclient.execute(httpget, localContext);
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
-
-		for (Header h : response.getAllHeaders()) {
-			// System.out.println(h.getName() + ": " + h.getValue());
-
-		}
 
 		EntityUtils.consume(response.getEntity());
 
@@ -321,67 +310,42 @@ public class DownloadSalesReportIntegrationTest {
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
 		EntityUtils.consume(response.getEntity());
-		
+
+		String devAccLocation = null;
 		for (Header h : response.getAllHeaders()) {
-			System.out.println(h.getName() + ": " + h.getValue());
+			if (h.getName().equals("Location")) {
+				devAccLocation = h.getValue();
+			}
 		}
 
-		/*
-		 * 
-		 * httpget = new HttpGet(checkCookieLocation);
-		 * httpget.setHeader("Cookie", checkCookieBuilder.toString()); response
-		 * = httpclient.execute(httpget, localContext);
-		 * 
-		 * Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
-		 * .getStatusLine().getStatusCode());
-		 * 
-		 * EntityUtils.consume(response.getEntity());
-		 * 
-		 * for (Header h : response.getAllHeaders()) { System.out.println(">>- "
-		 * + h.getName() + ": " + h.getValue()); }
-		 * 
-		 * // retrieve dev_acc id
-		 * builder.setScheme("https").setHost("play.google.com")
-		 * .setPath("/apps/publish/"); uri = builder.build();
-		 * 
-		 * httpget = new HttpGet(uri); httpget.setHeader( "Cookie",
-		 * "__utma=45884901.1560423851.1369658506.1369741661.1369744770.6; " +
-		 * "__utmz=45884901.1369744770.6.6.utmcsr=accounts.google.com|utmccn=(referral)|utmcmd=referral|utmcct=/CheckCookie; "
-		 * + "__utmb=45884901.8.10.1369744770; __utmc=45884901; " +
-		 * "AD=DQAAAKwAAAB0R1fCI72K6hzi5z6YO8SYNvo8n5ddqkrgHoChd2gOLMzseGjVtr4FBvvR_n84cuyCsqjQaVz5Kr_88-nmftiQdx_SNhhO8xYMYSlmbk4vL_rMyPEmPD0IAJdKsfqVldv0Gi0zPzCoV0KO_wYSEEWA8vj9-hcnKtRRGp7Lu2a-1DquPx6t7jR2vtlk71f3LKqIKdnJaPSRM3Xf_MEy3oRvz6w19po8tqhOXi7x5JgPNQ; "
-		 * + "__utma=45884901.1017694580.1369659331.1369659331.1369728191.2; " +
-		 * "__utmz=45884901.1369659331.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); enabledapps.uploader=0; "
-		 * +
-		 * "NID=67=iCtshF9pUSaJDQQGIdzv3_DiaLC0JN79vIGBcFoJ2gBeSkvmrpmjkvK_wr813-uu9TRI2ubB8JoWn1ulp1ECOUf1pk_FuGZ3W9vOwzFbrbbGGGvGz7C8_LH1FjiO6seNaQdSTA; "
-		 * +
-		 * "PREF=ID=39ede62c342d4241:TM=1369745190:LM=1369745190:S=xt-GgJq4GiNSKsYJ; "
-		 * +
-		 * "SID=DQAAAKgAAABBIpkeD4TjKbXlcRdYK53a7K6nkMFhNL71G5pUzEE-CZBYeFOYaHVUPo08kjkRyFRfD3oAlyEBKIsgs131H_C-vkPu1h97hLjMeo-j45kd5NqCkAz5987RdfOt1yvwT8aDi6_QTDlDWteWUMNH3VPP2Dt57CFk11UAPR05vifh6oP3TfKIY3y3bXUquOPkY2Tgx9isNaljLJ5aOcHjVBpE4siSTNvFjpj5ROoklvHYcA; "
-		 * + "HSID=AxKvzUusKtBGpvvxn; " + "SSID=APIya0kxGOI7bb-SH; " +
-		 * "APISID=XYBnf9wsnSYjm1tQ/AZqZl8OcdYCCol-vA; " +
-		 * "SAPISID=kPv6qVhLqOlp40Wi/AbZepeTNkrV-QF2q5"); response =
-		 * httpclient.execute(httpget, localContext);
-		 * 
-		 * for (Header h : response.getAllHeaders()) { //
-		 * System.out.println(h.getName() + ": " + h.getValue()); }
-		 * 
-		 * EntityUtils.consume(response.getEntity());
-		 */
-	}
-
-	@Test
-	public void movedTemporaryStatusForPlayPublishToken()
-			throws ClientProtocolException, IOException, URISyntaxException {
-		HttpGet g = new HttpGet(
-				"https://play.google.com/apps/publish?auth=DQAAAIMAAABFi9fo7YkvaI9mhQLip2b4yahVCfgGpvoJjq_tyjSbeItGMy5wuMwPT27gjxF4jTVwOrbfda95XkpdVqYD2diZXH2ijukRlmPyeX3IDMJy-x9jwnTlMZ_LuX00nM3WYnPRIvlbirPLQudd_SJJ-qwS5I2YCj6Z0fVdKt7nzaWN3DNIamf-JoFh2ZnQSMD7CCw");
-		HttpResponse response = httpclient.execute(g, localContext);
-
-		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
-				.getStatusLine().getStatusCode());
-
-		for (Header h : response.getAllHeaders()) {
-			System.out.println(h.getName() + ": " + h.getValue());
+		Assert.assertNotNull(devAccLocation);
+		List<NameValuePair> devAccValues = URLEncodedUtils.parse(
+				URI.create(devAccLocation), "UTF-8");
+		BigInteger devAcc = BigInteger.ZERO;
+		for (NameValuePair p : devAccValues) {
+			if (p.getName().equals("dev_acc")) {
+				devAcc = new BigInteger(p.getValue());
+			}
 		}
+		Assert.assertTrue(devAcc != BigInteger.ZERO);
+
+		// download sales report
+		builder.setScheme("https").setHost("play.google.com")
+				.setPath("/apps/publish/salesreport/download")
+				.setParameter("report_date", "2013_05")
+				.setParameter("report_type", "sales_report")
+				.setParameter("dev_acc", devAcc.toString());
+		uri = builder.build();
+
+		httpget = new HttpGet(uri);
+		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine()
+				.getStatusCode());
+
+		String report = EntityUtils.toString(response.getEntity());
+		Assert.assertNotNull(report);
+		Assert.assertTrue(report.length() > 0);
+		EntityUtils.consume(response.getEntity());
 	}
 
 	@Test
@@ -424,10 +388,6 @@ public class DownloadSalesReportIntegrationTest {
 		httpPost.setEntity(formEntity);
 
 		HttpResponse response = client.execute(httpPost, localContext);
-
-		for (Header h : response.getAllHeaders()) {
-			System.out.println(h.getName() + ": " + h.getValue());
-		}
 
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
