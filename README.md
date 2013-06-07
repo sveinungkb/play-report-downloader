@@ -9,12 +9,15 @@ https://github.com/sveinungkb/play-report-downloader
 ### Supported reports type are:
 
 * application statistics
-
 * sales reports TBD
 
 ### Build instructions
 
 * Rename play.empty.properties to play.properties and edit your Play credentials. 
+
+### Version history
+
+1.0.0.RELEASE - support for Google play sales reports from developer console.
 
 ### How to use it
 

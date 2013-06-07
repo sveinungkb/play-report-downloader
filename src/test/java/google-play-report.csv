@@ -1,0 +1,6 @@
+#-----------------------------
+# Estimated sales report
+#-----------------------------
+Order Number,Order Charged Date,Order Charged Timestamp,Financial Status,Device Model,Product Title,Product ID,Product Type,SKU ID,Currency of Sale,Item Price,Taxes Collected,Charged Amount,City of Buyer,State of Buyer,Postal Code of Buyer,Country of Buyer
+1307496652058362,2013-05-19,1368936853,Charged,C6603,Pack 1,com.test.game.blue,inapp,blue_pack_1_,EUR,0.80,0.00,0.80,,,06869,DE
+1352772537650069,2013-05-27,1369637762,Charged,vanquish,Red Game,com.test.game.red,paidapp,,USD,3.99,0.00,3.99,,,26062,US

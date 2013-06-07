@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import no.sveinub.play.download.ReportDownloaderException;
 
 import org.apache.http.HttpRequest;
@@ -23,6 +22,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 /**
+ * Sales report entry point.
  * 
  * @author georgilambov
  * 
@@ -48,16 +48,15 @@ public class SalesReportContext {
 	/**
 	 * Creates request to Google Play authentication.
 	 * 
-	 * @param <T>
+	 * @param clazz
 	 * @return
-	 * 
 	 */
-	public <T> T createStep() {
+	public <T> T createStep(Class<T> clazz) {
 		reportConnector.setLocalContext(localContext);
 		reportConnector.setHttpclient(httpclient);
 		try {
 			// TODO suppress warning overcome
-			return (T) reportConnector.execute();
+			return clazz.cast(reportConnector.execute());
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,7 +75,7 @@ public class SalesReportContext {
 	}
 
 	/**
-	 * 
+	 * Builds HTTPClient for strategies execution.
 	 */
 	private void postConstruct() {
 		PoolingClientConnectionManager cxMgr = new PoolingClientConnectionManager(
