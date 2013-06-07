@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+	<mapping date-format="yyyy-MM-dd">
+		<class-a>no.sveinub.play.bean.EstimatedSalesReportBean</class-a>
+		<class-b>no.sveinub.play.domain.PlayEstimatedSalesReport</class-b>
+	</mapping>
+
+</mappings>
