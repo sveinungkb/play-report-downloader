@@ -22,35 +22,25 @@ public class PlayReportDirector {
 	@Setter
 	private PlayReportBuilder playReportBuilder;
 
+	@Getter
+	@Setter
+	private GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
+
 	public PlayReportEntity getReport() {
 		return playReportBuilder.getPlayReportEntity();
 	}
 
+	/**
+	 * Constructs specific play report.
+	 * 
+	 * @param credentials
+	 */
 	public void constructReport(Credentials credentials) {
 		playReportBuilder.createNewReport(credentials);
 		playReportBuilder.buildPlayLogin();
 		playReportBuilder.buildSecurityCheck();
 		playReportBuilder.buildDeveloperAccount();
-
-		salesReportContext = playReportBuilder.getPlayReportEntity()
-				.getSalesReportContext();
-
-		GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
-		googlePlayEstimatedSalesReport.setCredentials(credentials);
-		googlePlayEstimatedSalesReport.setDeveloperAccount(playReportBuilder
-				.getPlayReportEntity().getDeveloperAccount());
-
-		salesReportContext.setReportConnector(googlePlayEstimatedSalesReport);
-
-	}
-
-	/**
-	 * Retrieves Google play report content.
-	 * 
-	 * @return
-	 */
-	public String getReportContent() {
-		return salesReportContext.createStep(String.class);
+		playReportBuilder.buildPlayReportContent();
 	}
 
 }

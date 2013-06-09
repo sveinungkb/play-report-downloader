@@ -1,9 +1,10 @@
 package no.sveinub.play.sales.builder;
 
-import lombok.Setter;
+import lombok.Getter;
 import no.sveinub.play.domain.DeveloperAccount;
 import no.sveinub.play.domain.PlayLogin;
 import no.sveinub.play.domain.SecurityCheck;
+import no.sveinub.play.sales.prepare.GooglePlayEstimatedSalesReport;
 import no.sveinub.play.sales.prepare.GooglePlayLogin;
 import no.sveinub.play.sales.prepare.GooglePlayOpen;
 import no.sveinub.play.sales.prepare.GooglePlaySecurityCheck;
@@ -17,16 +18,11 @@ import no.sveinub.play.sales.prepare.SalesReportContext;
  */
 public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 
-	@Setter
-	private SalesReportContext salesReportContext;
-
+	@Getter
 	private SecurityCheck securityCheck;
-
+	@Getter
 	private PlayLogin playLogin;
-
-	public EstimatedSalesReportBuilder() {
-		salesReportContext = playReportEntity.getSalesReportContext();
-	}
+	private DeveloperAccount developerAccount;
 
 	/*
 	 * (non-Javadoc)
@@ -35,6 +31,9 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 	 */
 	@Override
 	public void buildPlayLogin() {
+		SalesReportContext salesReportContext = playReportEntity
+				.getSalesReportContext();
+
 		GooglePlayLogin googlePlayLogin = new GooglePlayLogin();
 		googlePlayLogin.setCredentials(playReportEntity.getCredentials());
 
@@ -49,6 +48,9 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 	 */
 	@Override
 	public void buildSecurityCheck() {
+		SalesReportContext salesReportContext = playReportEntity
+				.getSalesReportContext();
+
 		GooglePlayOpen googlePlayOpen = new GooglePlayOpen();
 		googlePlayOpen.setPlayLogin(playLogin);
 		salesReportContext.setReportConnector(googlePlayOpen);
@@ -63,13 +65,37 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 	 */
 	@Override
 	public void buildDeveloperAccount() {
+		SalesReportContext salesReportContext = playReportEntity
+				.getSalesReportContext();
+
 		GooglePlaySecurityCheck devAccOpen = new GooglePlaySecurityCheck();
 		devAccOpen.setSecurityCheck(securityCheck);
 		salesReportContext.setReportConnector(devAccOpen);
-		DeveloperAccount developerAccount = salesReportContext
+		developerAccount = salesReportContext
 				.createStep(DeveloperAccount.class);
 
-		playReportEntity.setDeveloperAccount(developerAccount);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * no.sveinub.play.sales.builder.PlayReportBuilder#buildPlayReportContent()
+	 */
+	@Override
+	public void buildPlayReportContent() {
+		GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
+		googlePlayEstimatedSalesReport.setCredentials(playReportEntity
+				.getCredentials());
+		googlePlayEstimatedSalesReport.setDeveloperAccount(developerAccount);
+
+		SalesReportContext salesReportContext = playReportEntity
+				.getSalesReportContext();
+		salesReportContext.setReportConnector(googlePlayEstimatedSalesReport);
+
+		playReportEntity.setReportContent(salesReportContext
+				.createStep(String.class));
+
 	}
 
 }

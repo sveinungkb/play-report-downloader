@@ -3,6 +3,7 @@ package no.sveinub.play.sales.builder;
 import no.sveinub.play.download.Credentials;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -12,6 +13,7 @@ import lombok.Getter;
 public abstract class PlayReportBuilder {
 
 	@Getter
+	@Setter
 	protected PlayReportEntity playReportEntity;
 
 	/**
@@ -30,6 +32,11 @@ public abstract class PlayReportBuilder {
 	public abstract void buildDeveloperAccount();
 
 	/**
+	 * Creates report content.
+	 */
+	public abstract void buildPlayReportContent();
+
+	/**
 	 * Creates new report.
 	 * 
 	 * @param credentials
@@ -38,6 +45,7 @@ public abstract class PlayReportBuilder {
 		playReportEntity = new PlayReportEntity();
 		playReportEntity.setCredentials(credentials);
 		playReportEntity.setSalesReportContext(new SalesReportContext());
+		System.out.println(playReportEntity);
 	}
 
 }
