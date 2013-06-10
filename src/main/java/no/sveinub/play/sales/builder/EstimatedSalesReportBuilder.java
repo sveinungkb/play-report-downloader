@@ -93,8 +93,9 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 				.getSalesReportContext();
 		salesReportContext.setReportConnector(googlePlayEstimatedSalesReport);
 
-		playReportEntity.setReportContent(salesReportContext
-				.createStep(String.class));
+		String content = salesReportContext.createStep(String.class);
+
+		playReportEntity.setReportContent(content);
 
 	}
 

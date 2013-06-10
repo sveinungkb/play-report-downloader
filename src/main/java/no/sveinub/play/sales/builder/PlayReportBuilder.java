@@ -45,7 +45,6 @@ public abstract class PlayReportBuilder {
 		playReportEntity = new PlayReportEntity();
 		playReportEntity.setCredentials(credentials);
 		playReportEntity.setSalesReportContext(new SalesReportContext());
-		System.out.println(playReportEntity);
 	}
 
 }

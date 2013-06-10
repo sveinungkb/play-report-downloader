@@ -98,6 +98,9 @@
 				<configuration>
 					<printSummary>false</printSummary>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<excludes>
+						<exclude>**/**IntegrationTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>

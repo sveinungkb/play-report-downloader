@@ -1,10 +1,9 @@
 package no.sveinub.play.sales.builder;
 
-import no.sveinub.play.download.Credentials;
-import no.sveinub.play.sales.prepare.GooglePlayEstimatedSalesReport;
-import no.sveinub.play.sales.prepare.SalesReportContext;
 import lombok.Getter;
 import lombok.Setter;
+import no.sveinub.play.download.Credentials;
+import no.sveinub.play.sales.prepare.SalesReportContext;
 
 /**
  * Report creator.
@@ -21,10 +20,6 @@ public class PlayReportDirector {
 	@Getter
 	@Setter
 	private PlayReportBuilder playReportBuilder;
-
-	@Getter
-	@Setter
-	private GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
 
 	public PlayReportEntity getReport() {
 		return playReportBuilder.getPlayReportEntity();
