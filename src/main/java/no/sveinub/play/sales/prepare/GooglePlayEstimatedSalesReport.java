@@ -35,6 +35,10 @@ public class GooglePlayEstimatedSalesReport extends ReportConnector<String>
 					"At least one instance of credentials or developer account must be provided");
 		}
 
+		if (requestBean.getReportDate() == null) {
+			throw new IllegalArgumentException("reportDate is required");
+		}
+
 		// backwards compatibility with hardcoded devNumber
 		String devAcc = (developerAccount == null) ? requestBean
 				.getCredentials().getDevNumber() : developerAccount.getDevAcc();
