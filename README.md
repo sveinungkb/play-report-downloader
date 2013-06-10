@@ -23,6 +23,10 @@ None - in development.
 
 1.0.0.RELEASE - support for Google play sales reports from developer console.
 
+### TODO
+
+* Wrap application stats in API interface. 
+
 ### How to use it
 
 Check unit and integration tests.
