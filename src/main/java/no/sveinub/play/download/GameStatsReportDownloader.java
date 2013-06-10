@@ -153,7 +153,7 @@ public class GameStatsReportDownloader {
 		appendDateRange(days, uriBuilder);
 		uriBuilder.append("&dim=").append(REPORT_DIMENSION);
 		uriBuilder.append("&met=").append(REPORT_METRICS);
-		uriBuilder.append("&dev_acc=").append(credentials.devNumber);
+		uriBuilder.append("&dev_acc=").append(credentials.getDevNumber());
 		return uriBuilder.toString();
 	}
 
@@ -195,9 +195,9 @@ public class GameStatsReportDownloader {
 			String name = element.attr("name");
 			String value = element.attr("value");
 			if ("Passwd".equals(name)) {
-				value = credentials.password;
+				value = credentials.getPassword();
 			} else if ("Email".equals(name)) {
-				value = credentials.email;
+				value = credentials.getEmail();
 			} else if ("PersistentCookie".equals(name)) {
 				value = "no";
 			}

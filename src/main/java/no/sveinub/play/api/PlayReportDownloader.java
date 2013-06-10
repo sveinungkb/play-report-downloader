@@ -1,11 +1,10 @@
 package no.sveinub.play.api;
 
 import java.io.IOException;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import no.sveinub.play.domain.PlayEstimatedSalesReport;
+import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
 import no.sveinub.play.download.Credentials;
 import no.sveinub.play.sales.builder.EstimatedSalesReportBuilder;
 import no.sveinub.play.sales.builder.PlayReportDirector;
@@ -32,7 +31,7 @@ public class PlayReportDownloader implements ReportDownloader {
 	 * @see no.sveinub.play.api.ReportDownloader#retrieveEstimatedSalesReport()
 	 */
 	@Override
-	public List<PlayEstimatedSalesReport> retrieveEstimatedSalesReport()
+	public PlayEstimatedSalesReportStory retrieveEstimatedSalesReport()
 			throws MappingException, IOException {
 		if (credentials == null) {
 			throw new IllegalArgumentException("credentials are required");
@@ -50,8 +49,7 @@ public class PlayReportDownloader implements ReportDownloader {
 		EstimatedSalesReportMapper mapper = new EstimatedSalesReportMapper(
 				parserForEstimatedSalesReport);
 
-		List<PlayEstimatedSalesReport> content = mapper.getReportContent();
-		return content;
+		return mapper.getReportContent();
 	}
 
 }

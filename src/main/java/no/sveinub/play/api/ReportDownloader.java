@@ -1,11 +1,10 @@
 package no.sveinub.play.api;
 
 import java.io.IOException;
-import java.util.List;
+
+import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
 
 import org.dozer.MappingException;
-
-import no.sveinub.play.domain.PlayEstimatedSalesReport;
 
 /**
  * 
@@ -20,6 +19,6 @@ public interface ReportDownloader {
 	 * @throws IOException
 	 * @throws MappingException
 	 */
-	List<PlayEstimatedSalesReport> retrieveEstimatedSalesReport() throws MappingException, IOException;
+	PlayEstimatedSalesReportStory retrieveEstimatedSalesReport() throws MappingException, IOException;
 
 }

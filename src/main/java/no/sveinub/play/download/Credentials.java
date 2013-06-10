@@ -1,10 +1,13 @@
 package no.sveinub.play.download;
 
+import lombok.Data;
+
 /*
  * 
  * Play Report Downloader
  * https://github.com/sveinungkb/play-report-downloader
  * 
+ * Georgi Lambov, georgi.lambov@gmail.com
  * Copyright (2012) Sveinung Kval Bakken
  * sveinung.bakken@gmail.com
  * 
@@ -12,9 +15,9 @@ package no.sveinub.play.download;
  * If you want to contribute, add your name and email above and request a merge.
  * 
  */
-
+@Data
 public class Credentials {
-	public String email;
-	public String password;
-	public String devNumber;
+	private String email;
+	private String password;
+	private String devNumber;
 }

@@ -1,7 +1,11 @@
 package no.sveinub.play.sales.parser;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +14,7 @@ import java.util.List;
 
 import no.sveinub.play.bean.EstimatedSalesReportBean;
 import no.sveinub.play.domain.PlayEstimatedSalesReport;
+import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,8 +23,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -42,7 +45,7 @@ public class EstimatedSalesReportMapperTest {
 	}
 
 	@Parameters
-	public static Collection<Object[]> data() {
+	public static Collection<Object[]> data() throws ParseException {
 		List<EstimatedSalesReportBean> reports = new ArrayList<EstimatedSalesReportBean>();
 		EstimatedSalesReportBean report = new EstimatedSalesReportBean();
 		report.setChargedAmount("0.99");
@@ -63,6 +66,25 @@ public class EstimatedSalesReportMapperTest {
 		report.setTaxesCollected("0.00");
 		reports.add(report);
 
+		report = new EstimatedSalesReportBean();
+		report.setChargedAmount("0.89");
+		report.setCityOfBuyer("DE");
+		report.setCurrencyOfSale("EUR");
+		report.setDeviceModel("empty");
+		report.setFinancialStatus("charged");
+		report.setItemPrice("0.89");
+		report.setOrderChargedDate("2013-04-04");
+		report.setOrderChargedTimestamp(123455667L);
+		report.setOrderNumber(2345676L);
+		report.setPostalCodeOfBuyer("8999");
+		report.setProductId("pr-id");
+		report.setProductTitle("pr-title");
+		report.setProductType("pr-type");
+		report.setSkuId("sku");
+		report.setStateOfBuyer("");
+		report.setTaxesCollected("0.00");
+		reports.add(report);
+
 		Object[][] data = new Object[][] { { reports } };
 		return Arrays.asList(data);
 	}
@@ -74,11 +96,11 @@ public class EstimatedSalesReportMapperTest {
 	}
 
 	@Test
-	public void dozerMapping() throws IOException {
+	public void reportsMappingWithDozer() throws IOException {
 		when(parserForEstimatedSalesReport.getReportContent()).thenReturn(
 				csvReports);
 		List<PlayEstimatedSalesReport> reportContent = mapper
-				.getReportContent();
+				.getReportContent().getReports();
 		Assert.assertNotNull(reportContent);
 
 		EstimatedSalesReportBean csvReport = csvReports.get(0);
@@ -124,6 +146,20 @@ public class EstimatedSalesReportMapperTest {
 				mappedReport.getStateOfBuyer());
 		Assert.assertEquals(new BigDecimal(csvReport.getTaxesCollected()),
 				mappedReport.getTaxesCollected());
+
+		verify(parserForEstimatedSalesReport).getReportContent();
+	}
+
+	@Test
+	public void fromDateAndToDateForStoryHasCorrectOrder() throws IOException {
+		when(parserForEstimatedSalesReport.getReportContent()).thenReturn(
+				csvReports);
+
+		PlayEstimatedSalesReportStory reportStory = mapper.getReportContent();
+
+		Assert.assertNotNull(reportStory);
+		Assert.assertTrue(reportStory.getFromDate().compareTo(
+				reportStory.getToDate()) < 0);
 
 		verify(parserForEstimatedSalesReport).getReportContent();
 	}

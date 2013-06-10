@@ -73,8 +73,8 @@ public class DownloadSalesReportIntegrationTest {
 	@Before
 	public void setUp() {
 		Credentials credentials = new Credentials();
-		credentials.email = prop.getProperty("play.email");
-		credentials.password = prop.getProperty("play.password");
+		credentials.setEmail(prop.getProperty("play.email"));
+		credentials.setPassword(prop.getProperty("play.password"));
 
 		reportDownload = new GameStatsReportDownloader(credentials);
 
@@ -219,7 +219,7 @@ public class DownloadSalesReportIntegrationTest {
 						+ "&service=androiddeveloper";
 			}
 		}
-		
+
 		Assert.assertNotNull(checkCookieLocation);
 
 		RawCookieBuilder checkCookieBuilder = new RawCookieBuilder();
@@ -246,7 +246,7 @@ public class DownloadSalesReportIntegrationTest {
 		}
 
 		Assert.assertTrue(!gapsFirst.equals(gapsSecond));
-		
+
 		for (NameValuePair param : loginCookieBuilder.getQueryParams()) {
 			if (param.getName().equals("GALX")) {
 				checkCookieBuilder.addParameter(param.getName(),

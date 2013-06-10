@@ -34,7 +34,7 @@ public class GooglePlayEstimatedSalesReport extends ReportConnector<String> impl
 		}
 
 		// backwards compatibility with hardcoded devNumber
-		String devAcc = (developerAccount == null) ? credentials.devNumber
+		String devAcc = (developerAccount == null) ? credentials.getDevNumber()
 				: developerAccount.getDevAcc();
 
 		URIBuilder builder = new URIBuilder();

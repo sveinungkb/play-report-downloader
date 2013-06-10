@@ -34,7 +34,8 @@ public class Main {
 	private static final int N_DAYS = 100;
 
 	public static void main(String[] args) throws Exception {
-		GameStatsReportDownloader downloader = new GameStatsReportDownloader(getCredentials());
+		GameStatsReportDownloader downloader = new GameStatsReportDownloader(
+				getCredentials());
 		downloader.login();
 		File reportFile = downloader.downloadReportToDirectory(reportsDir(),
 				PACKAGE, N_DAYS);
@@ -49,10 +50,10 @@ public class Main {
 
 	private static Credentials getCredentials() {
 		Credentials whois = new Credentials();
-		whois.devNumber = DEV_ACCOUNT;
-		whois.password = PASSWORD;
-		whois.email = USERNAME;
+		whois.setDevNumber(DEV_ACCOUNT);
+		whois.setPassword(PASSWORD);
+		whois.setEmail(USERNAME);
 		return whois;
 	}
-	
+
 }

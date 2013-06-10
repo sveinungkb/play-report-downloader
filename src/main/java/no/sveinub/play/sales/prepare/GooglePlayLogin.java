@@ -87,9 +87,9 @@ public class GooglePlayLogin extends ReportConnector<PlayLogin> implements
 			String value = element.attr("value");
 
 			if ("Passwd".equals(name)) {
-				value = credentials.password;
+				value = credentials.getPassword();
 			} else if ("Email".equals(name)) {
-				value = credentials.email;
+				value = credentials.getEmail();
 			} else if ("PersistentCookie".equals(name)) {
 				value = "no";
 			}

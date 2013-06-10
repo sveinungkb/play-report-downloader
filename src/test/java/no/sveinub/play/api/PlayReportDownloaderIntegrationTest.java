@@ -33,8 +33,8 @@ public class PlayReportDownloaderIntegrationTest {
 	@Before
 	public void setUp() {
 		Credentials credentials = new Credentials();
-		credentials.email = prop.getProperty("play.email");
-		credentials.password = prop.getProperty("play.password");
+		credentials.setEmail(prop.getProperty("play.email"));
+		credentials.setPassword(prop.getProperty("play.password"));
 
 		playReportDownloader = new PlayReportDownloader();
 		playReportDownloader.setCredentials(credentials);
