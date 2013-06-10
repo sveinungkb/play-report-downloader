@@ -2,9 +2,13 @@ package no.sveinub.play.api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import no.sveinub.play.bean.PlayReportRequestBean;
+import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
 import no.sveinub.play.download.PlayCredentials;
 
 import org.dozer.MappingException;
@@ -32,7 +36,7 @@ public class PlayReportDownloaderIntegrationTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws ParseException {
 		PlayCredentials credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
@@ -40,15 +44,23 @@ public class PlayReportDownloaderIntegrationTest {
 		PlayReportRequestBean requestBean = new PlayReportRequestBean();
 		requestBean.setCredentials(credentials);
 
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM");
+		Date d = simpleDateFormat.parse("2013_05");
+		requestBean.setReportDate(d);
+
 		playReportDownloader = new PlayReportDownloader();
 		playReportDownloader.setRequestBean(requestBean);
+
 	}
 
 	@Test
 	public void retrieveEstimatedSalesReport() throws MappingException,
 			IOException {
-		Assert.assertNotNull(playReportDownloader
-				.retrieveEstimatedSalesReport());
+
+		PlayEstimatedSalesReportStory estimatedSalesReport = playReportDownloader
+				.retrieveEstimatedSalesReport();
+
+		Assert.assertNotNull(estimatedSalesReport);
 	}
 
 }

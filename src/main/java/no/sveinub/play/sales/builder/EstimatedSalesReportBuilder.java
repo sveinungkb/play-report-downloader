@@ -86,8 +86,8 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 	@Override
 	public void buildPlayReportContent() {
 		GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
-		googlePlayEstimatedSalesReport.setCredentials(playReportEntity
-				.getRequestBean().getCredentials());
+		googlePlayEstimatedSalesReport.setRequestBean(playReportEntity
+				.getRequestBean());
 		googlePlayEstimatedSalesReport.setDeveloperAccount(developerAccount);
 
 		SalesReportContext salesReportContext = playReportEntity

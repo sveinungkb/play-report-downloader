@@ -2,8 +2,12 @@ package no.sveinub.play.sales.prepare;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
+import no.sveinub.play.bean.PlayReportRequestBean;
 import no.sveinub.play.domain.DeveloperAccount;
 import no.sveinub.play.domain.PlayLogin;
 import no.sveinub.play.domain.SecurityCheck;
@@ -24,6 +28,7 @@ public class SalesReportContextIntegrationTest {
 	private SalesReportContext salesReportContext;
 	private static final Properties prop = new Properties();
 	private PlayCredentials credentials;
+	private PlayReportRequestBean requestBean;
 
 	@BeforeClass
 	public static void init() throws IOException {
@@ -34,12 +39,19 @@ public class SalesReportContextIntegrationTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws ParseException {
 		salesReportContext = new SalesReportContext();
 
 		credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
+
+		requestBean = new PlayReportRequestBean();
+		requestBean.setCredentials(credentials);
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM");
+		Date d = simpleDateFormat.parse("2013_05");
+		requestBean.setReportDate(d);
 	}
 
 	@Test
@@ -66,7 +78,7 @@ public class SalesReportContextIntegrationTest {
 		Assert.assertNotNull(developerAccount.getDevAcc());
 
 		GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
-		googlePlayEstimatedSalesReport.setCredentials(credentials);
+		googlePlayEstimatedSalesReport.setRequestBean(requestBean);
 		googlePlayEstimatedSalesReport.setDeveloperAccount(developerAccount);
 		salesReportContext.setReportConnector(googlePlayEstimatedSalesReport);
 

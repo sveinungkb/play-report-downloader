@@ -8,12 +8,12 @@ https://github.com/sveinungkb/play-report-downloader
 
 ### Latest stable version
 
-None - in development.
+1.0.0.RELEASE - sales reporsta are wrapped in API interface. For application statistics you need to check Main.java and how to use it.
 
 ### Supported reports type are:
 
 * application statistics
-* sales reports TBD
+* sales reports
 
 ### Build instructions
 

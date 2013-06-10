@@ -93,5 +93,14 @@ public class ParserForEstimatedSalesReportTest {
 		Assert.assertNotNull(reportContent);
 		Assert.assertEquals(0, reportContent.size());
 	}
+	
+	@Test
+	public void parseReportWithNoneCsvContent() throws IOException {
+		parserForEstimatedSalesReport.setContent("<html>Page is not found, please try again later</html>");
+		List<EstimatedSalesReportBean> reportContent = parserForEstimatedSalesReport
+				.getReportContent();
+		Assert.assertNotNull(reportContent);
+		Assert.assertEquals(0, reportContent.size());
+	}
 
 }
