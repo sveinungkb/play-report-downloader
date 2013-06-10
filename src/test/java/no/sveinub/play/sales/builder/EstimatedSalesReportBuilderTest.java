@@ -2,6 +2,7 @@ package no.sveinub.play.sales.builder;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import no.sveinub.play.bean.PlayReportRequestBean;
 import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 
@@ -21,9 +22,11 @@ public class EstimatedSalesReportBuilderTest {
 	@Mock
 	private SalesReportContext salesReportContext;
 	@Mock
-	private PlayCredentials credentials;
+	private PlayReportRequestBean requestBean;
 	@Mock
 	private PlayReportEntity playReportEntity;
+	@Mock
+	private PlayCredentials credentials;
 
 	@Before
 	public void setUp() {
@@ -35,14 +38,15 @@ public class EstimatedSalesReportBuilderTest {
 
 	@Test
 	public void createNewReport() {
-		estimatedSalesReportBuilder.createNewReport(credentials);
+		estimatedSalesReportBuilder.createNewReport(requestBean);
 	}
 
 	@Test
 	public void buildPlayLogin() {
 		when(playReportEntity.getSalesReportContext()).thenReturn(
 				salesReportContext);
-
+		when(playReportEntity.getRequestBean()).thenReturn(requestBean);
+		when(requestBean.getCredentials()).thenReturn(credentials);
 		estimatedSalesReportBuilder.buildPlayLogin();
 
 		verify(playReportEntity).getSalesReportContext();

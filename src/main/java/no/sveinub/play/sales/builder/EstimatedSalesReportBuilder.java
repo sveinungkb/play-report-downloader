@@ -35,7 +35,8 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 				.getSalesReportContext();
 
 		GooglePlayLogin googlePlayLogin = new GooglePlayLogin();
-		googlePlayLogin.setCredentials(playReportEntity.getCredentials());
+		googlePlayLogin.setCredentials(playReportEntity.getRequestBean()
+				.getCredentials());
 
 		salesReportContext.setReportConnector(googlePlayLogin);
 		playLogin = salesReportContext.createStep(PlayLogin.class);
@@ -86,7 +87,7 @@ public class EstimatedSalesReportBuilder extends PlayReportBuilder {
 	public void buildPlayReportContent() {
 		GooglePlayEstimatedSalesReport googlePlayEstimatedSalesReport = new GooglePlayEstimatedSalesReport();
 		googlePlayEstimatedSalesReport.setCredentials(playReportEntity
-				.getCredentials());
+				.getRequestBean().getCredentials());
 		googlePlayEstimatedSalesReport.setDeveloperAccount(developerAccount);
 
 		SalesReportContext salesReportContext = playReportEntity

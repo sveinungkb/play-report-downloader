@@ -1,7 +1,7 @@
 package no.sveinub.play.sales.builder;
 
 import static org.mockito.Mockito.when;
-import no.sveinub.play.download.PlayCredentials;
+import no.sveinub.play.bean.PlayReportRequestBean;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +20,7 @@ public class PlayReportDirectorTest {
 	@Mock
 	private EstimatedSalesReportBuilder estimatedSalesReportBuilder;
 	@Mock
-	private PlayCredentials credentials;
+	private PlayReportRequestBean requestBean;
 	@Mock
 	private PlayReportEntity playReportEntity;
 
@@ -35,7 +35,7 @@ public class PlayReportDirectorTest {
 	@Test
 	public void constructReportWithEstimatedSalesReportBuilder() {
 		playReportDirector.setPlayReportBuilder(estimatedSalesReportBuilder);
-		playReportDirector.constructReport(credentials);
+		playReportDirector.constructReport(requestBean);
 
 	}
 
@@ -45,7 +45,7 @@ public class PlayReportDirectorTest {
 		when(estimatedSalesReportBuilder.getPlayReportEntity()).thenReturn(
 				playReportEntity);
 
-		playReportDirector.constructReport(credentials);
+		playReportDirector.constructReport(requestBean);
 		Assert.assertNull(playReportDirector.getReport().getReportContent());
 	}
 

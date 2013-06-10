@@ -2,7 +2,7 @@ package no.sveinub.play.sales.builder;
 
 import lombok.Getter;
 import lombok.Setter;
-import no.sveinub.play.download.PlayCredentials;
+import no.sveinub.play.bean.PlayReportRequestBean;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 
 /**
@@ -30,8 +30,8 @@ public class PlayReportDirector {
 	 * 
 	 * @param credentials
 	 */
-	public void constructReport(PlayCredentials credentials) {
-		playReportBuilder.createNewReport(credentials);
+	public void constructReport(PlayReportRequestBean requestBean) {
+		playReportBuilder.createNewReport(requestBean);
 		playReportBuilder.buildPlayLogin();
 		playReportBuilder.buildSecurityCheck();
 		playReportBuilder.buildDeveloperAccount();

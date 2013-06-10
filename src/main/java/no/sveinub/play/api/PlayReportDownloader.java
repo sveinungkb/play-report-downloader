@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import lombok.Getter;
 import lombok.Setter;
+import no.sveinub.play.bean.PlayReportRequestBean;
 import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
-import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.builder.EstimatedSalesReportBuilder;
 import no.sveinub.play.sales.builder.PlayReportDirector;
 import no.sveinub.play.sales.parser.EstimatedSalesReportMapper;
@@ -23,7 +23,7 @@ public class PlayReportDownloader implements ReportDownloader {
 
 	@Getter
 	@Setter
-	private PlayCredentials credentials;
+	private PlayReportRequestBean requestBean;
 
 	/*
 	 * (non-Javadoc)
@@ -33,13 +33,14 @@ public class PlayReportDownloader implements ReportDownloader {
 	@Override
 	public PlayEstimatedSalesReportStory retrieveEstimatedSalesReport()
 			throws MappingException, IOException {
-		if (credentials == null) {
-			throw new IllegalArgumentException("credentials are required");
+		if (requestBean == null) {
+			throw new IllegalArgumentException(
+					"play report request is required");
 		}
 
 		PlayReportDirector director = new PlayReportDirector();
 		director.setPlayReportBuilder(new EstimatedSalesReportBuilder());
-		director.constructReport(credentials);
+		director.constructReport(requestBean);
 
 		String reportContent = director.getReport().getReportContent();
 

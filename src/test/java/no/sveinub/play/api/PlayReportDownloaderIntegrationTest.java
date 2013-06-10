@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import no.sveinub.play.bean.PlayReportRequestBean;
 import no.sveinub.play.download.PlayCredentials;
 
 import org.dozer.MappingException;
@@ -36,8 +37,11 @@ public class PlayReportDownloaderIntegrationTest {
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
 
+		PlayReportRequestBean requestBean = new PlayReportRequestBean();
+		requestBean.setCredentials(credentials);
+
 		playReportDownloader = new PlayReportDownloader();
-		playReportDownloader.setCredentials(credentials);
+		playReportDownloader.setRequestBean(requestBean);
 	}
 
 	@Test
