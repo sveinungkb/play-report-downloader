@@ -5,7 +5,7 @@ import java.io.IOException;
 import lombok.Getter;
 import lombok.Setter;
 import no.sveinub.play.domain.PlayEstimatedSalesReportStory;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.builder.EstimatedSalesReportBuilder;
 import no.sveinub.play.sales.builder.PlayReportDirector;
 import no.sveinub.play.sales.parser.EstimatedSalesReportMapper;
@@ -23,7 +23,7 @@ public class PlayReportDownloader implements ReportDownloader {
 
 	@Getter
 	@Setter
-	private Credentials credentials;
+	private PlayCredentials credentials;
 
 	/*
 	 * (non-Javadoc)

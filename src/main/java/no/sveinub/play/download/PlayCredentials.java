@@ -16,7 +16,7 @@ import lombok.Data;
  * 
  */
 @Data
-public class Credentials {
+public class PlayCredentials {
 	private String email;
 	private String password;
 	private String devNumber;

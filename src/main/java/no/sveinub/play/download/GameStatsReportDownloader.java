@@ -55,9 +55,9 @@ public class GameStatsReportDownloader {
 
 	private DefaultHttpClient client;
 	private BasicHttpContext context;
-	private Credentials credentials;
+	private PlayCredentials credentials;
 
-	public GameStatsReportDownloader(Credentials credentials) {
+	public GameStatsReportDownloader(PlayCredentials credentials) {
 		this.credentials = credentials;
 		client = new DefaultHttpClient();
 		context = new BasicHttpContext();

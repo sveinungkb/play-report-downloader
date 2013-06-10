@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 
 import org.dozer.MappingException;
 import org.junit.Assert;
@@ -32,7 +32,7 @@ public class PlayReportDownloaderIntegrationTest {
 
 	@Before
 	public void setUp() {
-		Credentials credentials = new Credentials();
+		PlayCredentials credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
 

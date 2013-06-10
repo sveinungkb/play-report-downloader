@@ -1,7 +1,7 @@
 package no.sveinub.play.sales.builder;
 
 import lombok.Data;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 
 /**
@@ -16,6 +16,6 @@ public class PlayReportEntity {
 	// private SecurityCheck securityCheck;
 
 	private SalesReportContext salesReportContext;
-	private Credentials credentials;
+	private PlayCredentials credentials;
 	private String reportContent;
 }

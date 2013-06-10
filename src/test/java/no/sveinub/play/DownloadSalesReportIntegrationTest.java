@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.download.GameStatsReportDownloader;
 import no.sveinub.play.download.ReportDownloaderException;
 import no.sveinub.play.http.RawCookieBuilder;
@@ -72,7 +72,7 @@ public class DownloadSalesReportIntegrationTest {
 
 	@Before
 	public void setUp() {
-		Credentials credentials = new Credentials();
+		PlayCredentials credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
 

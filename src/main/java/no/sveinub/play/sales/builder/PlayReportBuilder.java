@@ -1,6 +1,6 @@
 package no.sveinub.play.sales.builder;
 
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +41,7 @@ public abstract class PlayReportBuilder {
 	 * 
 	 * @param credentials
 	 */
-	public void createNewReport(Credentials credentials) {
+	public void createNewReport(PlayCredentials credentials) {
 		playReportEntity = new PlayReportEntity();
 		playReportEntity.setCredentials(credentials);
 		playReportEntity.setSalesReportContext(new SalesReportContext());

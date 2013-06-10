@@ -15,7 +15,7 @@ package no.sveinub.play;
 
 import java.io.File;
 
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.download.GameStatsReportDownloader;
 import no.sveinub.play.report.Report;
 import no.sveinub.play.report.ReportReader;
@@ -48,8 +48,8 @@ public class Main {
 		return new File("c:\\users\\username\\desktop\\reports");
 	}
 
-	private static Credentials getCredentials() {
-		Credentials whois = new Credentials();
+	private static PlayCredentials getCredentials() {
+		PlayCredentials whois = new PlayCredentials();
 		whois.setDevNumber(DEV_ACCOUNT);
 		whois.setPassword(PASSWORD);
 		whois.setEmail(USERNAME);

@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Setter;
 import no.sveinub.play.domain.PlayLogin;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.download.ReportDownloaderException;
 import no.sveinub.play.http.RawCookieBuilder;
 
@@ -37,7 +37,7 @@ public class GooglePlayLogin extends ReportConnector<PlayLogin> implements
 		PrepareSalesReport<PlayLogin> {
 
 	@Setter
-	private Credentials credentials;
+	private PlayCredentials credentials;
 
 	/**
 	 * 

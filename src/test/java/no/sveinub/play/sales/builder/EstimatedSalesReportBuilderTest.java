@@ -2,7 +2,7 @@ package no.sveinub.play.sales.builder;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.sales.prepare.SalesReportContext;
 
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class EstimatedSalesReportBuilderTest {
 	@Mock
 	private SalesReportContext salesReportContext;
 	@Mock
-	private Credentials credentials;
+	private PlayCredentials credentials;
 	@Mock
 	private PlayReportEntity playReportEntity;
 

@@ -7,7 +7,7 @@ import java.util.Properties;
 import no.sveinub.play.domain.DeveloperAccount;
 import no.sveinub.play.domain.PlayLogin;
 import no.sveinub.play.domain.SecurityCheck;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class SalesReportContextIntegrationTest {
 
 	private SalesReportContext salesReportContext;
 	private static final Properties prop = new Properties();
-	private Credentials credentials;
+	private PlayCredentials credentials;
 
 	@BeforeClass
 	public static void init() throws IOException {
@@ -37,7 +37,7 @@ public class SalesReportContextIntegrationTest {
 	public void setUp() {
 		salesReportContext = new SalesReportContext();
 
-		credentials = new Credentials();
+		credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
 	}

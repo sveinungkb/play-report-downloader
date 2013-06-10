@@ -12,7 +12,7 @@ import org.apache.http.util.EntityUtils;
 
 import lombok.Setter;
 import no.sveinub.play.domain.DeveloperAccount;
-import no.sveinub.play.download.Credentials;
+import no.sveinub.play.download.PlayCredentials;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class GooglePlayEstimatedSalesReport extends ReportConnector<String> impl
 	@Setter
 	private DeveloperAccount developerAccount;
 	@Setter
-	private Credentials credentials;
+	private PlayCredentials credentials;
 
 	public String execute() throws URISyntaxException, ClientProtocolException,
 			IOException {
