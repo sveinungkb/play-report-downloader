@@ -8,6 +8,8 @@ https://github.com/sveinungkb/play-report-downloader
 
 ### Latest stable version
 
+[![Build Status](https://travis-ci.org/gogoluxecs/play-report-downloader.png?branch=master)](https://travis-ci.org/gogoluxecs/play-report-downloader)
+
 1.0.0.RELEASE - sales reporsta are wrapped in API interface. For application statistics you need to check Main.java and how to use it.
 
 ### Supported reports type are:
