@@ -10,7 +10,7 @@ https://github.com/sveinungkb/play-report-downloader
 
 [![Build Status](https://travis-ci.org/gogoluxecs/play-report-downloader.png?branch=master)](https://travis-ci.org/gogoluxecs/play-report-downloader)
 
-1.0.0.RELEASE - sales reporsta are wrapped in API interface. For application statistics you need to check Main.java and how to use it.
+1.0.1.RELEASE - sales reports are wrapped in API interface. For application statistics you need to check Main.java and how to use it.
 
 ### Supported reports type are:
 
@@ -23,6 +23,7 @@ https://github.com/sveinungkb/play-report-downloader
 
 ### Version history
 
+1.0.1.RELEASE - add maven shade plugin
 1.0.0.RELEASE - support for Google play sales reports from developer console.
 
 ### TODO
