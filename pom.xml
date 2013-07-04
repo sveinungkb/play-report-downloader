@@ -4,7 +4,7 @@
 	<groupId>no.sveinub.play</groupId>
 	<artifactId>report-downloader</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1.RELEASE</version>
+	<version>1.0.2.RELEASE</version>
 	<name>report-downloader</name>
 	<url>http://maven.apache.org</url>
 	<properties>
