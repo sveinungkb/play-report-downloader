@@ -1,7 +1,8 @@
 package no.sveinub.play.report;
 
+import static no.sveinub.play.report.DateHelper.toDate;
+
 import org.joda.time.DateTime;
-import static no.sveinub.play.report.DateHelper.*;
 
 public class ReportLine {
 	public DateTime date;
