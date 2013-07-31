@@ -55,7 +55,6 @@ public class SalesReportContext {
 		reportConnector.setLocalContext(localContext);
 		reportConnector.setHttpclient(httpclient);
 		try {
-			// TODO suppress warning overcome
 			return clazz.cast(reportConnector.execute());
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

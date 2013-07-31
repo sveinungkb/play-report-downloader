@@ -61,6 +61,7 @@ public class PlayReportDownloaderIntegrationTest {
 				.retrieveEstimatedSalesReport();
 
 		Assert.assertNotNull(estimatedSalesReport);
+		System.out.println(estimatedSalesReport.getContent());
 	}
 
 }

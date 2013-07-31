@@ -1,3 +1,4 @@
 /target
 /.classpath
 /manual-commands
+/dependency-reduced-pom.xml

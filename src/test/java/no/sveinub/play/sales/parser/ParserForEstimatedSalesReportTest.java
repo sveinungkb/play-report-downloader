@@ -24,8 +24,7 @@ public class ParserForEstimatedSalesReportTest {
 		parserForEstimatedSalesReport = new ParserForEstimatedSalesReport();
 
 		String content = IOUtils
-				.toString(ClassLoader
-						.getSystemResourceAsStream("google-play-report.csv"),
+				.toString(this.getClass().getResourceAsStream("/google-play-report.csv"),
 						"UTF-8");
 
 		parserForEstimatedSalesReport.setContent(content);
