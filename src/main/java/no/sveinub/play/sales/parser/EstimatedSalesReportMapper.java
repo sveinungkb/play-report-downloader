@@ -83,7 +83,6 @@ public class EstimatedSalesReportMapper {
 		int i = 0;
 		for (ListIterator<EstimatedSalesReportBean> it = reportContent
 				.listIterator(); it.hasNext();) {
-
 			PlayEstimatedSalesReport report = mapper.map(it.next(),
 					PlayEstimatedSalesReport.class);
 			reports.add(report);

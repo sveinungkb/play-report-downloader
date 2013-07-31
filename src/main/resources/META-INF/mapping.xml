@@ -5,6 +5,17 @@
 	<mapping date-format="yyyy-MM-dd">
 		<class-a>no.sveinub.play.bean.EstimatedSalesReportBean</class-a>
 		<class-b>no.sveinub.play.domain.PlayEstimatedSalesReport</class-b>
+		<field custom-converter="no.sveinub.play.sales.parser.converter.MoneyConverter">
+			<a>itemPrice</a>
+			<b>itemPrice</b>
+		</field>
+		<field custom-converter="no.sveinub.play.sales.parser.converter.MoneyConverter">
+			<a>taxesCollected</a>
+			<b>taxesCollected</b>
+		</field>
+		<field custom-converter="no.sveinub.play.sales.parser.converter.MoneyConverter">
+			<a>chargedAmount</a>
+			<b>chargedAmount</b>
+		</field>
 	</mapping>
-
 </mappings>

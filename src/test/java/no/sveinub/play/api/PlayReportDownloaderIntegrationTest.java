@@ -45,7 +45,7 @@ public class PlayReportDownloaderIntegrationTest {
 		requestBean.setCredentials(credentials);
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM");
-		Date d = simpleDateFormat.parse("2013_05");
+		Date d = simpleDateFormat.parse("2013_07");
 		requestBean.setReportDate(d);
 
 		playReportDownloader = new PlayReportDownloader();

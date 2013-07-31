@@ -86,11 +86,7 @@ public class ParserForEstimatedSalesReport implements
 		CsvToBean<EstimatedSalesReportBean> csv = new CsvToBean<EstimatedSalesReportBean>();
 
 		StringReader stringReader = new StringReader(content);
-		CSVReader csvreader = new CSVReader(stringReader,
-				CSVReader.DEFAULT_SEPARATOR,
-				CSVReader.DEFAULT_ESCAPE_CHARACTER, 3); // skip first 3 lines
-														// because of GooglePlay
-														// notification message
+		CSVReader csvreader = new CSVReader(stringReader);
 		List<EstimatedSalesReportBean> mappedData = csv.parse(strat, csvreader);
 
 		try {

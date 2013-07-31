@@ -78,8 +78,6 @@ public class DownloadSalesReportIntegrationTest {
 		PlayCredentials credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
-		credentials.setCdsSecurityToken(prop
-				.getProperty("play.cds_security_token"));
 
 		reportDownload = new GameStatsReportDownloader(credentials);
 
@@ -339,7 +337,8 @@ public class DownloadSalesReportIntegrationTest {
 		builder.setScheme("https")
 				.setHost("storage.cloud.google.com")
 				.setPath(
-						"/pubsite_prod_rev_10794437684402093811/sales/salesreport_201307.zip");
+						"/pubsite_prod_rev_" + devAcc.toString()
+								+ "/sales/salesreport_201307.zip");
 		uri = builder.build();
 
 		httpget = new HttpGet(uri);
@@ -359,11 +358,8 @@ public class DownloadSalesReportIntegrationTest {
 				.startsWith("https://www.google.com/accounts/ServiceLogin?service=cds&passive"));
 		EntityUtils.consume(response.getEntity());
 
-		// cloud storage service
+		// 1 cloud storage service
 		httpget = new HttpGet(cdsLoginLocation);
-		// httpget.setHeader(
-		// "Cookie",
-		// "GoogleAccountsLocale_session=bg; GAPS=1:3Vg9_9RXo_1bhMk9Jr2yKDNNt1D-dg:a7q5pw4oLhM7lOR3; GALX=uYrpBz3Zlps; RMME=false; NID=67=mvvhf5g7xafY6X_9YB1_Vccw1puY929lkxfClOs7BvL4Rn9xEvTgqwgKdZnvvJKNZyQCwP8nfTHX-ET-ye1q3BDFESMDFoxauGcyvHX3hco8XSbJKB5XCmcDJwamG0l_cnhNYPi2WVBAyjFVdg; SID=DQAAAAQBAAC0IzDwwXGTILwRExDJCN16bCsj6gZNqizTcZtCC1idDFKIy31c4cxqiazHTmEdpo6VMoTDuNwdVtAsZIKFIA6GAPiy7HAijoR5xX2ZwVp2BKxl2IWJlBhcEW6QZ4lwVYgmHVJWS_ttQO1zhXQZDwSuQl4mbKNkgM4_qJKJTh17lEC2KRUfWqyTxVOzxiJIybrgTMQvXxwMM7Si_jwmz7Fwep73ygf6rHccztaj1aqntogUFfWikRQz_3bx0haKDQyVYuWA4YnJfCeSLtw4LMpAh_OmUwzFFBevWUfKrKCuCEAK7hRbFfrFIKvyGEsbQPUDvqW1oBLUe_emiKtFnRqlYrZcLjeAeMCsf3WvfNPNeA; LSID=s.BG:DQAAAAcBAADc_Uw1dBMIh3W_w0OSq-ubE40HixS1uDSZJm770BMqJj-svBwhFcShTw1HQ0YX1vHxgsXp4o1DVb_zA4gw391rmH8ZR9MjzlRPIsFkJSg_Z6DHE4SKl5Jm98rZyumLuDlL6yr6lPKPxHJOBx-3jeIpq_NBm6V0SPiXkqsNMS_95eVovnovcWvUimlkljeqtinl2BVaZ70IxAQ9AnBoyBhIKVDAJZKErdqLmBcrYFegnNzq0A3ZgG86Ss21hiYJsmvltCwO9ZD52mUtwtvAAZKEHoeSvc6qDu424SfnOfLjEm37ZVeF2-ru415jg7f7l-CoFuOa-6dlBnnfNXTAkFvh34AKl1rAnLtRCXcf7SekfA; HSID=AuCBV44QF5H8XIgVx; SSID=AFTkAPVhqxkPvkonw; APISID=JuZ9GjqaLibPkGh3/A6BGwRmPLLzcgLm57; SAPISID=ctsHxMol2UoD7K2b/AJRGiSTG8rnVyU3hO");
 		response = httpclient.execute(httpget, localContext);
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
@@ -378,6 +374,7 @@ public class DownloadSalesReportIntegrationTest {
 				.startsWith("https://accounts.google.com/ServiceLogin?service=cds&passive"));
 		EntityUtils.consume(response.getEntity());
 
+		// 2
 		httpget = new HttpGet(cdsLoginLocation);
 		response = httpclient.execute(httpget, localContext);
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
@@ -390,6 +387,7 @@ public class DownloadSalesReportIntegrationTest {
 		}
 		EntityUtils.consume(response.getEntity());
 
+		// 3
 		httpget = new HttpGet(cdsLoginLocation);
 		response = httpclient.execute(httpget, localContext);
 		for (Header h : response.getAllHeaders()) {
@@ -398,17 +396,6 @@ public class DownloadSalesReportIntegrationTest {
 			}
 		}
 
-		RawCookieBuilder cdsCookieBuilder = new RawCookieBuilder();
-		its = new BasicHeaderElementIterator(
-				response.headerIterator("Set-Cookie"));
-		while (its.hasNext()) {
-			HeaderElement elem = its.nextElement();
-			if (elem.getName().equals("cds")) {
-				cdsCookieBuilder.addParameter(elem.getName(), elem.getValue());
-			}
-		}
-
-		Assert.assertNotNull(cdsCookieBuilder.getQueryParams().get(0));
 		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
 				.getStatusLine().getStatusCode());
 		EntityUtils.consume(response.getEntity());
@@ -482,6 +469,7 @@ public class DownloadSalesReportIntegrationTest {
 			IOUtils.copy(zipInputStream, byteArrayOutputStream);
 		} finally {
 			IOUtils.closeQuietly(zipInputStream);
+			IOUtils.closeQuietly(byteArrayOutputStream);
 		}
 
 		String report = byteArrayOutputStream.toString("UTF-8");

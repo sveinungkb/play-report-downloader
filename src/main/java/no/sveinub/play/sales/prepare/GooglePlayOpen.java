@@ -40,7 +40,7 @@ public class GooglePlayOpen extends ReportConnector<SecurityCheck> implements
 			ReportDownloaderException {
 		if (playLogin == null) {
 			throw new IllegalArgumentException(
-					"Missign required data from playLogin collection");
+					"Missing required data from playLogin collection");
 		}
 
 		SecurityCheck securityCheck = new SecurityCheck();
