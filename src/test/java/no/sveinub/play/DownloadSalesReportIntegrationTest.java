@@ -1,5 +1,6 @@
 package no.sveinub.play;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -8,12 +9,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipInputStream;
 
-import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.download.GameStatsReportDownloader;
+import no.sveinub.play.download.PlayCredentials;
 import no.sveinub.play.download.ReportDownloaderException;
 import no.sveinub.play.http.RawCookieBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpRequest;
@@ -75,6 +78,8 @@ public class DownloadSalesReportIntegrationTest {
 		PlayCredentials credentials = new PlayCredentials();
 		credentials.setEmail(prop.getProperty("play.email"));
 		credentials.setPassword(prop.getProperty("play.password"));
+		credentials.setCdsSecurityToken(prop
+				.getProperty("play.cds_security_token"));
 
 		reportDownload = new GameStatsReportDownloader(credentials);
 
@@ -300,9 +305,9 @@ public class DownloadSalesReportIntegrationTest {
 			HeaderElement elem = its.nextElement();
 			if (elem.getName().equals("AD")) {
 				adCookie = elem.getValue();
+				Assert.assertNotNull(adCookie);
 			}
 		}
-		Assert.assertNotNull(adCookie);
 
 		// app/publish for dev_acc
 		httpget = new HttpGet("https://play.google.com/apps/publish/");
@@ -329,22 +334,160 @@ public class DownloadSalesReportIntegrationTest {
 		}
 		Assert.assertTrue(devAcc != BigInteger.ZERO);
 
-		// download sales report
-		builder.setScheme("https").setHost("play.google.com")
-				.setPath("/apps/publish/salesreport/download")
-				.setParameter("report_date", "2013_05")
-				.setParameter("report_type", "sales_report")
-				.setParameter("dev_acc", devAcc.toString());
+		// download sales report from google cloud storage
+		// https://storage.cloud.google.com/pubsite_prod_rev_10794437684402093811/sales/salesreport_201307.zip
+		builder.setScheme("https")
+				.setHost("storage.cloud.google.com")
+				.setPath(
+						"/pubsite_prod_rev_10794437684402093811/sales/salesreport_201307.zip");
 		uri = builder.build();
 
 		httpget = new HttpGet(uri);
 		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+
+		String cdsLoginLocation = null;
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				cdsLoginLocation = h.getValue();
+			}
+		}
+
+		Assert.assertNotNull(cdsLoginLocation);
+		Assert.assertTrue(cdsLoginLocation
+				.startsWith("https://www.google.com/accounts/ServiceLogin?service=cds&passive"));
+		EntityUtils.consume(response.getEntity());
+
+		// cloud storage service
+		httpget = new HttpGet(cdsLoginLocation);
+		// httpget.setHeader(
+		// "Cookie",
+		// "GoogleAccountsLocale_session=bg; GAPS=1:3Vg9_9RXo_1bhMk9Jr2yKDNNt1D-dg:a7q5pw4oLhM7lOR3; GALX=uYrpBz3Zlps; RMME=false; NID=67=mvvhf5g7xafY6X_9YB1_Vccw1puY929lkxfClOs7BvL4Rn9xEvTgqwgKdZnvvJKNZyQCwP8nfTHX-ET-ye1q3BDFESMDFoxauGcyvHX3hco8XSbJKB5XCmcDJwamG0l_cnhNYPi2WVBAyjFVdg; SID=DQAAAAQBAAC0IzDwwXGTILwRExDJCN16bCsj6gZNqizTcZtCC1idDFKIy31c4cxqiazHTmEdpo6VMoTDuNwdVtAsZIKFIA6GAPiy7HAijoR5xX2ZwVp2BKxl2IWJlBhcEW6QZ4lwVYgmHVJWS_ttQO1zhXQZDwSuQl4mbKNkgM4_qJKJTh17lEC2KRUfWqyTxVOzxiJIybrgTMQvXxwMM7Si_jwmz7Fwep73ygf6rHccztaj1aqntogUFfWikRQz_3bx0haKDQyVYuWA4YnJfCeSLtw4LMpAh_OmUwzFFBevWUfKrKCuCEAK7hRbFfrFIKvyGEsbQPUDvqW1oBLUe_emiKtFnRqlYrZcLjeAeMCsf3WvfNPNeA; LSID=s.BG:DQAAAAcBAADc_Uw1dBMIh3W_w0OSq-ubE40HixS1uDSZJm770BMqJj-svBwhFcShTw1HQ0YX1vHxgsXp4o1DVb_zA4gw391rmH8ZR9MjzlRPIsFkJSg_Z6DHE4SKl5Jm98rZyumLuDlL6yr6lPKPxHJOBx-3jeIpq_NBm6V0SPiXkqsNMS_95eVovnovcWvUimlkljeqtinl2BVaZ70IxAQ9AnBoyBhIKVDAJZKErdqLmBcrYFegnNzq0A3ZgG86Ss21hiYJsmvltCwO9ZD52mUtwtvAAZKEHoeSvc6qDu424SfnOfLjEm37ZVeF2-ru415jg7f7l-CoFuOa-6dlBnnfNXTAkFvh34AKl1rAnLtRCXcf7SekfA; HSID=AuCBV44QF5H8XIgVx; SSID=AFTkAPVhqxkPvkonw; APISID=JuZ9GjqaLibPkGh3/A6BGwRmPLLzcgLm57; SAPISID=ctsHxMol2UoD7K2b/AJRGiSTG8rnVyU3hO");
+		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				cdsLoginLocation = h.getValue();
+			}
+		}
+
+		Assert.assertNotNull(cdsLoginLocation);
+		Assert.assertTrue(cdsLoginLocation
+				.startsWith("https://accounts.google.com/ServiceLogin?service=cds&passive"));
+		EntityUtils.consume(response.getEntity());
+
+		httpget = new HttpGet(cdsLoginLocation);
+		response = httpclient.execute(httpget, localContext);
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				cdsLoginLocation = h.getValue();
+			}
+		}
+		EntityUtils.consume(response.getEntity());
+
+		httpget = new HttpGet(cdsLoginLocation);
+		response = httpclient.execute(httpget, localContext);
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				cdsLoginLocation = h.getValue();
+			}
+		}
+
+		RawCookieBuilder cdsCookieBuilder = new RawCookieBuilder();
+		its = new BasicHeaderElementIterator(
+				response.headerIterator("Set-Cookie"));
+		while (its.hasNext()) {
+			HeaderElement elem = its.nextElement();
+			if (elem.getName().equals("cds")) {
+				cdsCookieBuilder.addParameter(elem.getName(), elem.getValue());
+			}
+		}
+
+		Assert.assertNotNull(cdsCookieBuilder.getQueryParams().get(0));
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		EntityUtils.consume(response.getEntity());
+
+		// build direct download link
+		httpget = new HttpGet(cdsLoginLocation);
+		response = httpclient.execute(httpget, localContext);
+		String reportDownloadLocation = null;
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				reportDownloadLocation = h.getValue();
+			}
+		}
+
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		Assert.assertNotNull(reportDownloadLocation);
+		EntityUtils.consume(response.getEntity());
+
+		httpget = new HttpGet(reportDownloadLocation);
+		response = httpclient.execute(httpget, localContext);
+		RawCookieBuilder cdsAuthFull = new RawCookieBuilder();
+		its = new BasicHeaderElementIterator(
+				response.headerIterator("Set-Cookie"));
+		while (its.hasNext()) {
+			HeaderElement elem = its.nextElement();
+			if (elem.getName().startsWith("AUTH_")) {
+				cdsAuthFull.addParameter(elem.getName(), elem.getValue());
+			}
+		}
+
+		String testLocation = null;
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				testLocation = h.getValue();
+			}
+		}
+
+		Assert.assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, response
+				.getStatusLine().getStatusCode());
+		EntityUtils.consume(response.getEntity());
+
+		// dowload link after authentication
+		httpget = new HttpGet(testLocation);
+		response = httpclient.execute(httpget, localContext);
+		for (Header h : response.getAllHeaders()) {
+			if (h.getName().equals("Location")) {
+				reportDownloadLocation = h.getValue();
+			}
+		}
+
+		Assert.assertNotNull(reportDownloadLocation);
+		Assert.assertTrue(reportDownloadLocation
+				.contains("commondatastorage.googleapis.com"));
+		EntityUtils.consume(response.getEntity());
+
+		// actual download link
+		httpget = new HttpGet(reportDownloadLocation);
+		httpget.setHeader("Cookie", cdsAuthFull.toString());
+		response = httpclient.execute(httpget, localContext);
+
 		Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine()
 				.getStatusCode());
 
-		String report = EntityUtils.toString(response.getEntity());
+		ZipInputStream zipInputStream = new ZipInputStream(response.getEntity()
+				.getContent());
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+		try {
+			zipInputStream.getNextEntry();
+			IOUtils.copy(zipInputStream, byteArrayOutputStream);
+		} finally {
+			IOUtils.closeQuietly(zipInputStream);
+		}
+
+		String report = byteArrayOutputStream.toString("UTF-8");
 		Assert.assertNotNull(report);
 		Assert.assertTrue(report.length() > 0);
+
 		EntityUtils.consume(response.getEntity());
 	}
 
